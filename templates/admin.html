@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header admin-top-header">
+    <div>
+        <p class="page-label">Панель керування</p>
+        <h2 class="page-title">Адмін</h2>
+    </div>
+    <form action="/admin/logout" method="POST">
+        <button type="submit" class="btn-logout">Вийти →</button>
+    </form>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}{% for cat, msg in messages %}
+    <div class="flash flash-{{ cat }}">{{ msg }}</div>
+  {% endfor %}{% endif %}
+{% endwith %}
+
+<div class="admin-tabs" id="adminTabs">
+    <button class="tab-btn active" onclick="showTab('movies')">🎬 Фільми</button>
+    <button class="tab-btn" onclick="showTab('categories')">📂 Категорії</button>
+    <button class="tab-btn" onclick="showTab('news')">📰 Новини</button>
+    <button class="tab-btn" onclick="showTab('articles')">✍️ Статті</button>
+</div>
+
+<!-- MOVIES TAB -->
+<div class="tab-content active" id="tab-movies">
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h3>🎬 Фільми</h3>
+        <a href="/admin/movie/add" class="btn-add">+ Додати фільм</a>
+    </div>
+    <table class="data-table">
+        <thead><tr><th>#</th><th>Постер</th><th>Назва</th><th>Категорія</th><th></th></tr></thead>
+        <tbody>
+        {% for m in movies %}
+        <tr>
+            <td class="id-cell">{{ m.id }}</td>
+            <td>{% if m.poster %}<img src="{{ m.poster }}" class="thumb">{% else %}<span class="no-thumb">—</span>{% endif %}</td>
+            <td class="title-cell">{{ m.title }}</td>
+            <td><span class="badge">{{ m.category_name or '—' }}</span></td>
+            <td class="actions-cell">
+                <a href="/admin/movie/edit/{{ m.id }}" class="btn-icon btn-edit">✎</a>
+                <form action="/admin/movie/delete/{{ m.id }}" method="POST" style="display:inline" onsubmit="return confirm('Видалити?')">
+                    <button type="submit" class="btn-icon btn-del">✕</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<!-- CATEGORIES TAB -->
+<div class="tab-content" id="tab-categories">
+<div class="admin-card">
+    <div class="admin-card-header"><h3>📂 Категорії</h3></div>
+    <form class="quick-add-form" action="/admin/category/add" method="POST">
+        <input type="text" name="name" placeholder="Нова категорія...">
+        <button type="submit" class="btn-add">Додати</button>
+    </form>
+    <table class="data-table">
+        <thead><tr><th>#</th><th>Назва</th><th></th></tr></thead>
+        <tbody>
+        {% for cat in categories %}
+        <tr>
+            <td class="id-cell">{{ cat.id }}</td>
+            <td>{{ cat.name }}</td>
+            <td class="actions-cell">
+                <form action="/admin/category/delete/{{ cat.id }}" method="POST" onsubmit="return confirm('Видалити категорію?')">
+                    <button type="submit" class="btn-icon btn-del">✕</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<!-- NEWS TAB -->
+<div class="tab-content" id="tab-news">
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h3>📰 Новини</h3>
+        <a href="/admin/news/add" class="btn-add">+ Додати новину</a>
+    </div>
+    <table class="data-table">
+        <thead><tr><th>#</th><th>Зображення</th><th>Заголовок</th><th>Дата</th><th></th></tr></thead>
+        <tbody>
+        {% for n in news_list %}
+        <tr>
+            <td class="id-cell">{{ n.id }}</td>
+            <td>{% if n.image %}<img src="{{ n.image }}" class="thumb">{% else %}<span class="no-thumb">—</span>{% endif %}</td>
+            <td class="title-cell">{{ n.title }}</td>
+            <td style="color:var(--text-muted);font-size:12px;">{{ n.created_at[:10] }}</td>
+            <td class="actions-cell">
+                <a href="/admin/news/edit/{{ n.id }}" class="btn-icon btn-edit">✎</a>
+                <form action="/admin/news/delete/{{ n.id }}" method="POST" style="display:inline" onsubmit="return confirm('Видалити?')">
+                    <button type="submit" class="btn-icon btn-del">✕</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<!-- ARTICLES TAB -->
+<div class="tab-content" id="tab-articles">
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h3>✍️ Статті</h3>
+        <a href="/admin/article/add" class="btn-add">+ Додати статтю</a>
+    </div>
+    <table class="data-table">
+        <thead><tr><th>#</th><th>Зображення</th><th>Заголовок</th><th>Дата</th><th></th></tr></thead>
+        <tbody>
+        {% for a in articles %}
+        <tr>
+            <td class="id-cell">{{ a.id }}</td>
+            <td>{% if a.image %}<img src="{{ a.image }}" class="thumb">{% else %}<span class="no-thumb">—</span>{% endif %}</td>
+            <td class="title-cell">{{ a.title }}</td>
+            <td style="color:var(--text-muted);font-size:12px;">{{ a.created_at[:10] }}</td>
+            <td class="actions-cell">
+                <a href="/admin/article/edit/{{ a.id }}" class="btn-icon btn-edit">✎</a>
+                <form action="/admin/article/delete/{{ a.id }}" method="POST" style="display:inline" onsubmit="return confirm('Видалити?')">
+                    <button type="submit" class="btn-icon btn-del">✕</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<script>
+function showTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+{% endblock %}

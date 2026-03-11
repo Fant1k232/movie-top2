@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="login-wrap">
+
+  <div class="login-box">
+
+    <div class="login-logo">
+      <span class="logo-icon">▶</span>
+    </div>
+
+    <h2 class="login-title">Адмін-вхід</h2>
+    <p class="login-sub">Доступ тільки для адміністраторів</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, message in messages %}
+          <div class="flash flash-{{ cat }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form class="login-form" action="" method="POST">
+
+      <div class="form-group">
+        <label>Логін</label>
+        <input type="text" name="username" placeholder="admin" autocomplete="username" required>
+      </div>
+
+      <div class="form-group">
+        <label>Пароль</label>
+        <div class="password-wrap">
+          <input type="password" name="password" id="passInput" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="toggle-pass" onclick="togglePass()">👁</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-login">Увійти →</button>
+
+    </form>
+
+    <a href="/" class="login-back">← Повернутись на сайт</a>
+
+  </div>
+
+</div>
+
+<script>
+function togglePass() {
+  const inp = document.getElementById('passInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <p class="page-label">Кіноаналітика</p>
+    <h2 class="page-title">Статті</h2>
+</div>
+<div class="content-grid">
+{% for a in articles %}
+<a href="/articles/{{ a.id }}" class="content-big-card">
+    {% if a.image %}<div class="cbcard-img"><img src="{{ a.image }}" alt=""></div>{% endif %}
+    <div class="cbcard-body">
+        <p class="cbcard-date">{{ a.created_at[:10] }}</p>
+        <h3>{{ a.title }}</h3>
+        <p>{{ a.content[:120] if a.content else '' }}{% if a.content and a.content|length > 120 %}…{% endif %}</p>
+        <span class="cbcard-link">Читати далі →</span>
+    </div>
+</a>
+{% endfor %}
+</div>
+{% endblock %}

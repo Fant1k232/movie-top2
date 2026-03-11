@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieTop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="noise"></div>
+<header class="site-header">
+    <a href="/" class="logo">
+        <span class="logo-icon">▶</span>
+        <span class="logo-text">MOVIE<em>TOP</em></span>
+    </a>
+    <nav class="main-nav">
+        <a href="/" class="nav-link">Головна</a>
+        <a href="/categories" class="nav-link">Каталог</a>
+        <a href="/news" class="nav-link">Новини</a>
+        <a href="/articles" class="nav-link">Статті</a>
+    </nav>
+</header>
+<main class="main-content">
+{% block content %}{% endblock %}
+</main>
+<footer class="site-footer">
+    <div class="footer-inner">
+        <a href="/" class="logo">
+            <span class="logo-icon">▶</span>
+            <span class="logo-text">MOVIE<em>TOP</em></span>
+        </a>
+        <nav class="footer-nav">
+            <a href="/categories">Каталог</a>
+            <a href="/news">Новини</a>
+            <a href="/articles">Статті</a>
+        </nav>
+        <p class="footer-copy">© 2025 MovieTop</p>
+    </div>
+</footer>
+</body>
+</html>

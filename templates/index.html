@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"><div class="hero-gradient"></div></div>
+    <div class="hero-content">
+        <p class="hero-label">Ласкаво просимо</p>
+        <h1 class="hero-title">Кіно, яке<br><em>захоплює</em></h1>
+        <p class="hero-sub">Відкрийте найкращі фільми, відібрані за жанрами. Читайте новини та статті про кіносвіт.</p>
+        <div class="hero-btns">
+            <a href="/categories" class="cta-btn">
+                <span>Переглянути каталог</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/news" class="cta-btn cta-outline">Новини</a>
+        </div>
+    </div>
+    <div class="hero-decoration">
+        <div class="deco-ring ring-1"></div>
+        <div class="deco-ring ring-2"></div>
+        <div class="deco-ring ring-3"></div>
+    </div>
+</section>
+
+<!-- CATEGORIES ROW -->
+<section class="home-section">
+    <div class="section-head">
+        <h2 class="section-title">Жанри</h2>
+        <a href="/categories" class="see-all">Всі →</a>
+    </div>
+    <div class="genres-row">
+        {% set icons = {"Action":"⚡","Comedy":"😄","Sci-Fi":"🚀","Drama":"🎭","Horror":"👁","Romance":"❤️","Thriller":"🔪","Animation":"✨"} %}
+        {% for cat in categories %}
+        <a href="/category/{{ cat.id }}" class="genre-pill">
+            <span>{{ icons.get(cat.name, "🎬") }}</span> {{ cat.name }}
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- TOP MOVIES -->
+<section class="home-section">
+    <div class="section-head">
+        <h2 class="section-title">🏆 Топ фільмів</h2>
+        <a href="/categories" class="see-all">Всі фільми →</a>
+    </div>
+    <div class="movies-grid">
+        {% for m in top_movies %}
+        <a href="/movie/{{ m.id }}" class="movie-card">
+            <div class="movie-poster">
+                {% if m.poster %}<img src="{{ m.poster }}" alt="{{ m.title }}" loading="lazy">{% else %}<div class="no-poster">🎬</div>{% endif %}
+                <div class="movie-overlay"><span class="play-btn">▶</span></div>
+                {% if m.avg_rating > 0 %}
+                <div class="card-rating">★ {{ "%.1f"|format(m.avg_rating) }}</div>
+                {% endif %}
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ m.title }}</h3>
+                <p class="movie-meta">{{ m.category_name }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- NEWS + ARTICLES SPLIT -->
+<div class="home-split">
+
+    <section class="home-section split-col">
+        <div class="section-head">
+            <h2 class="section-title">📰 Новини</h2>
+            <a href="/news" class="see-all">Всі →</a>
+        </div>
+        <div class="content-list">
+            {% for n in latest_news %}
+            <a href="/news/{{ n.id }}" class="content-card">
+                {% if n.image %}<img src="{{ n.image }}" alt="" class="content-thumb">{% endif %}
+                <div class="content-info">
+                    <h4>{{ n.title }}</h4>
+                    <p>{{ n.content[:80] if n.content else '' }}{% if n.content and n.content|length > 80 %}…{% endif %}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="home-section split-col">
+        <div class="section-head">
+            <h2 class="section-title">✍️ Статті</h2>
+            <a href="/articles" class="see-all">Всі →</a>
+        </div>
+        <div class="content-list">
+            {% for a in latest_articles %}
+            <a href="/articles/{{ a.id }}" class="content-card">
+                {% if a.image %}<img src="{{ a.image }}" alt="" class="content-thumb">{% endif %}
+                <div class="content-info">
+                    <h4>{{ a.title }}</h4>
+                    <p>{{ a.content[:80] if a.content else '' }}{% if a.content and a.content|length > 80 %}…{% endif %}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header">
+    <p class="page-label">Оберіть жанр</p>
+    <h2 class="page-title">Каталог</h2>
+</div>
+
+<div class="categories-grid">
+{% set icons = {"Action": "⚡", "Comedy": "😄", "Sci-Fi": "🚀", "Drama": "🎭", "Horror": "👁", "Romance": "❤️", "Thriller": "🔪", "Animation": "✨"} %}
+{% for category in categories %}
+<a href="/category/{{ category.id }}" class="category-card">
+    <div class="cat-icon">{{ icons.get(category.name, "🎬") }}</div>
+    <div class="cat-info">
+        <h3>{{ category.name }}</h3>
+        <span class="cat-arrow">→</span>
+    </div>
+    <div class="cat-glow"></div>
+</a>
+{% endfor %}
+</div>
+
+{% endblock %}

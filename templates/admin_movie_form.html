@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header">
+    <a href="/admin" class="back-link">← Адмін</a>
+    <p class="page-label">{% if action == 'add' %}Новий фільм{% else %}Редагування{% endif %}</p>
+    <h2 class="page-title">{% if action == 'add' %}Додати фільм{% else %}{{ movie.title }}{% endif %}</h2>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, message in messages %}
+      <div class="flash flash-{{ cat }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="form-layout">
+
+  <form class="movie-form" action="" method="POST">
+
+    <div class="form-group">
+      <label>Назва фільму *</label>
+      <input type="text" name="title" value="{{ movie.title if movie else '' }}" placeholder="Назва..." required>
+    </div>
+
+    <div class="form-group">
+      <label>Опис</label>
+      <textarea name="description" rows="4" placeholder="Короткий опис сюжету...">{{ movie.description if movie else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>URL постера</label>
+      <input type="url" name="poster" id="posterUrl" value="{{ movie.poster if movie else '' }}" placeholder="https://...">
+    </div>
+
+    <div class="form-group">
+      <label>Категорія</label>
+      <select name="category_id">
+        {% for cat in categories %}
+        <option value="{{ cat.id }}" {% if movie and movie.category_id == cat.id %}selected{% endif %}>
+          {{ cat.name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-add">
+        {% if action == 'add' %}Додати фільм{% else %}Зберегти зміни{% endif %}
+      </button>
+      <a href="/admin" class="btn-cancel">Скасувати</a>
+    </div>
+
+  </form>
+
+  <div class="poster-preview-panel">
+    <p class="preview-label">Попередній перегляд</p>
+    <div class="poster-frame" id="posterFrame">
+      {% if movie and movie.poster %}
+      <img src="{{ movie.poster }}" id="previewImg" alt="">
+      {% else %}
+      <div class="poster-placeholder" id="posterPlaceholder">
+        <span>🎬</span>
+        <p>Введіть URL постера</p>
+      </div>
+      <img src="" id="previewImg" alt="" style="display:none">
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+const urlInput = document.getElementById('posterUrl');
+const img = document.getElementById('previewImg');
+const placeholder = document.getElementById('posterPlaceholder');
+
+urlInput.addEventListener('input', function() {
+  const url = this.value.trim();
+  if (url) {
+    img.src = url;
+    img.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+    img.onerror = () => { img.style.display = 'none'; if(placeholder) placeholder.style.display = 'flex'; };
+  } else {
+    img.style.display = 'none';
+    if (placeholder) placeholder.style.display = 'flex';
+  }
+});
+</script>
+
+{% endblock %}

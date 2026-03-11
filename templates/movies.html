@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header">
+    <a href="/categories" class="back-link">← Каталог</a>
+    <p class="page-label">Жанр</p>
+    <h2 class="page-title">{{ category.name }}</h2>
+</div>
+
+<div class="movies-grid">
+{% for movie in movies %}
+<a href="/movie/{{ movie.id }}" class="movie-card">
+    <div class="movie-poster">
+        {% if movie.poster %}
+        <img src="{{ movie.poster }}" alt="{{ movie.title }}" loading="lazy">
+        {% else %}
+        <div class="no-poster">🎬</div>
+        {% endif %}
+        <div class="movie-overlay">
+            <span class="play-btn">▶</span>
+        </div>
+    </div>
+    <div class="movie-info">
+        <h3 class="movie-title">{{ movie.title }}</h3>
+        <p class="movie-desc">{{ movie.description[:60] }}{% if movie.description|length > 60 %}…{% endif %}</p>
+    </div>
+</a>
+{% endfor %}
+</div>
+
+{% endblock %}

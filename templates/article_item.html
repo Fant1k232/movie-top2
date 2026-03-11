@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="article-page">
+    <div class="article-hero">
+        {% if item.image %}<img src="{{ item.image }}" alt="" class="article-hero-img">{% endif %}
+        <div class="article-hero-fade"></div>
+        <div class="article-hero-content">
+            <a href="/articles" class="back-link">← Статті</a>
+            <p class="page-label">{{ item.created_at[:10] }}</p>
+            <h1 class="detail-title">{{ item.title }}</h1>
+        </div>
+    </div>
+    <div class="article-body">
+        <div class="article-text">{{ item.content }}</div>
+        {% if related %}
+        <div class="related-section">
+            <h3 class="related-title">Схожі статті</h3>
+            <div class="related-grid">
+                {% for r in related %}
+                <a href="/articles/{{ r.id }}" class="content-card">
+                    {% if r.image %}<img src="{{ r.image }}" alt="" class="content-thumb">{% endif %}
+                    <div class="content-info"><h4>{{ r.title }}</h4></div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

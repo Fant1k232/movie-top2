@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header">
+    <a href="/admin" class="back-link">← Адмін</a>
+    <p class="page-label">{% if action == 'add' %}Новий запис{% else %}Редагування{% endif %}</p>
+    <h2 class="page-title">
+        {% if type == 'news' %}{% if action == 'add' %}Додати новину{% else %}Редагувати новину{% endif %}
+        {% else %}{% if action == 'add' %}Додати статтю{% else %}Редагувати статтю{% endif %}{% endif %}
+    </h2>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}{% for cat, msg in messages %}
+    <div class="flash flash-{{ cat }}">{{ msg }}</div>
+  {% endfor %}{% endif %}
+{% endwith %}
+
+<div class="form-layout">
+  <form class="movie-form" action="" method="POST">
+
+    <div class="form-group">
+      <label>Заголовок *</label>
+      <input type="text" name="title" value="{{ item.title if item else '' }}" placeholder="Заголовок..." required>
+    </div>
+
+    <div class="form-group">
+      <label>Текст</label>
+      <textarea name="content" rows="10" placeholder="Текст публікації...">{{ item.content if item else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>URL зображення</label>
+      <input type="url" name="image" id="imgUrl" value="{{ item.image if item else '' }}" placeholder="https://...">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-add">
+        {% if action == 'add' %}Опублікувати{% else %}Зберегти зміни{% endif %}
+      </button>
+      <a href="/admin" class="btn-cancel">Скасувати</a>
+    </div>
+  </form>
+
+  <div class="poster-preview-panel">
+    <p class="preview-label">Прев'ю зображення</p>
+    <div class="poster-frame" id="posterFrame">
+      {% if item and item.image %}
+      <img src="{{ item.image }}" id="previewImg" alt="" style="width:100%;height:100%;object-fit:cover;">
+      {% else %}
+      <div class="poster-placeholder" id="posterPlaceholder"><span>🖼</span><p>Введіть URL</p></div>
+      <img src="" id="previewImg" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+const urlInput = document.getElementById('imgUrl');
+const img = document.getElementById('previewImg');
+const placeholder = document.getElementById('posterPlaceholder');
+urlInput.addEventListener('input', function() {
+    const url = this.value.trim();
+    if (url) {
+        img.src = url; img.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+        img.onerror = () => { img.style.display='none'; if(placeholder) placeholder.style.display='flex'; };
+    } else {
+        img.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'flex';
+    }
+});
+</script>
+{% endblock %}

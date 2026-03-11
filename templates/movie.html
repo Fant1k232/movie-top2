@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="movie-page">
+    <div class="movie-backdrop">
+        {% if movie.poster %}<img src="{{ movie.poster }}" alt="" class="backdrop-img">{% endif %}
+        <div class="backdrop-fade"></div>
+    </div>
+    <div class="movie-detail">
+        <div class="detail-poster">
+            {% if movie.poster %}
+            <img src="{{ movie.poster }}" alt="{{ movie.title }}">
+            {% else %}<div class="no-poster-lg">🎬</div>{% endif %}
+        </div>
+        <div class="detail-info">
+            <a href="javascript:history.back()" class="back-link">← Назад</a>
+            <p class="page-label">{{ movie.category_name or '' }}</p>
+            <h1 class="detail-title">{{ movie.title }}</h1>
+            <p class="detail-desc">{{ movie.description }}</p>
+
+            <!-- RATING -->
+            <div class="rating-block">
+                <div class="rating-avg">
+                    <span class="rating-star">★</span>
+                    <span class="rating-num" id="avgRating">
+                        {% if movie.avg_rating > 0 %}{{ "%.1f"|format(movie.avg_rating) }}{% else %}—{% endif %}
+                    </span>
+                    <span class="rating-count" id="ratingCount">
+                        {% if movie.rating_count > 0 %}({{ movie.rating_count }} оцінок){% endif %}
+                    </span>
+                </div>
+                <div class="rating-label">Ваша оцінка:</div>
+                <div class="stars" id="starWidget">
+                    {% for i in range(1, 6) %}
+                    <button class="star {% if user_rating and user_rating.score >= i %}star-on{% endif %}"
+                            data-score="{{ i }}" onclick="rate({{ i }}, {{ movie.id }})">★</button>
+                    {% endfor %}
+                </div>
+                <p class="rating-hint" id="ratingHint">
+                    {% if user_rating %}Ви вже оцінили цей фільм{% else %}Натисніть на зірку, щоб оцінити{% endif %}
+                </p>
+            </div>
+
+            <a href="/categories" class="cta-btn cta-sm" style="margin-top:8px;">Більше фільмів</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function rate(score, movieId) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((s,i) => s.classList.toggle('star-on', i < score));
+
+    fetch(`/movie/${movieId}/rate`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `score=${score}`
+    })
+    .then(r => r.json())
+    .then(data => {
+        document.getElementById('avgRating').textContent = data.avg;
+        document.getElementById('ratingCount').textContent = `(${data.count} оцінок)`;
+        document.getElementById('ratingHint').textContent = 'Дякуємо за оцінку!';
+    });
+}
+</script>
+{% endblock %}
